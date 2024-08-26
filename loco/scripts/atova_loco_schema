@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# USAGE: atova_loco_schema db.txt {htmx | html}
+
+filename=$1
+kind=""
+
+if [ -e $2 ]; then
+    kind="--kind $2"
+fi
+
+if [ -e "$filename" ]; then
+  # read file
+  items=$(cat "$filename")
+
+  # Use paste to remove newline characters
+  new_list=$(paste -sd "" <<< "$items")
+
+  #trunkate file extention with ${filename%.*} 
+  cargo loco generate scaffold ${filename%.*} $new_list $kind
+else
+  echo "File not found: $filename"
+fi
+

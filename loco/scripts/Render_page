@@ -1,0 +1,67 @@
+
+# NOTE: #!/bin/sh will break [[, ]]
+# USAGE: 
+#   Render_page ../css/vpkely.css -v index 3  <- toc-depth=3 
+#   Render_page -L -v index   <-- default to toc-depth=2
+#
+SITE=$1
+CSS=$2
+TARGET=$PWD/$3
+DEPTH=$4
+shift;
+
+if [[ $DEPTH == "" ]]; then
+    DEPTH=2
+fi
+
+if [[ $SITE == "-N" ]]; then
+    SITE=https://nobundle.github.io/css/
+elif [[ $SITE == "-L" ]]; then
+    SITE=https://lerina.github.io/css/
+elif [[ $SITE == "-R" ]]; then
+    SITE=https://razafy-info.github.io/css/ 
+elif [[ $SITE == "-O" ]]; then
+    SITE=https://optimaldev.github.io/css/ 
+else
+    CSS=$SITE
+fi
+
+THE_STYLE=styles_min.css
+LANDING_STYLE=landing_min.css
+VP_KELY=vpkely.css
+TEMPLATE="template_kely.html"
+DATADIR="${HOME}/.pandoc/" #"/home/tac/.local/share/pandoc" 
+
+if [[ $CSS == "-d" ]]; then
+    STYLE=$SITE$THE_STYLE
+elif [[ $CSS == "-l" ]]; then
+    STYLE=$SITE$LANDING_STYLE
+elif [[ $CSS == "-v" ]]; then
+    STYLE=$SITE$VP_KELY
+else
+    STYLE=${CSS}
+fi
+
+pandoc -s -V --highlight-style=pygments --css=$STYLE -f markdown+smart "${TARGET}.md" -o "${TARGET}.html" --toc --toc-depth $DEPTH --data-dir=$DATADIR --template $TEMPLATE
+
+echo -e "\n@" $TARGET "\n@" $STYLE "  ---- DONE!"
+
+
+#--------------------- 
+# Example md file
+
+#---
+#title: Level-Up!
+#subtitle: A Rust/Wasm code-retreat
+#author:
+#- lerina j-y Razafy
+#toc-depth: 3
+#description: |
+#    This is a long
+#    description.
+#
+#    It consists of two paragraphs
+#---
+
+#<main>
+# 

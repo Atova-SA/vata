@@ -1,0 +1,5 @@
+# recursively execute `cargo clean` on each directory 
+
+for d in */; do              # only match directories
+  ( cd "$d" && cargo clean ) # subshell to avoid `cd` back to root each time.
+done

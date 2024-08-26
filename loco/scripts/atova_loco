@@ -1,0 +1,24 @@
+# [source: tjyang](https://github.com/loco-rs/loco/discussions/273)
+# usage: 
+# atova_loco myapp saas 
+
+# display command
+echo "LOCO_APP_NAME=$1 LOCO_TEMPLATE=$2 loco new -p ${PWD}"
+
+# --> LOCO_TEMPLATE= {lightweight-service|rest-api|saas}
+LOCO_APP_NAME=$1 LOCO_TEMPLATE=$2 loco new -p ${PWD}
+
+#
+cd $1
+echo "cargo loco task seed_data refresh:true" > populate.sh
+
+#
+echo -e "if using sqlite, edit config/development.yaml to: \n
+uri: {{ get_env(name="DATABASE_URL", default="sqlite://${PWD}/db.sqlite?mode=rwc") }} \n
+or \n
+uri: {{ get_env(name="DATABASE_URL", default="sqlite://./db.sqlite?mode=rwc") }}
+\n
+"
+
+# NOTE: Use -e option, then you can print new line character with \n in the string
+
